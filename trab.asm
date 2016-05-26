@@ -2,572 +2,602 @@
 
 segment code
 ..start:
-    		mov 		ax,data
-    		mov 		ds,ax
-    		mov 		ax,stack
-    		mov 		ss,ax
-    		mov 		sp,stacktop
+	mov 		ax,data
+	mov 		ds,ax
+	mov 		ax,stack
+	mov 		ss,ax
+	mov 		sp,stacktop
 
 ; salvar modo corrente de video(vendo como esta o modo de video da maquina)
 
-            mov  		ah,0Fh
-    		int  		10h
-    		mov  		[modo_anterior],al   
+	mov  		ah,0Fh
+	int  		10h
+	mov  		[modo_anterior],al   
 
 ; alterar modo de video para grafico 640x480 16 cores
-    	mov     	al,12h
-   		mov     	ah,0
-    	int     	10h
-		
-;desenhar a interface
+
+	mov     	al,12h
+	mov     	ah,0
+	int     	10h
 	
+;inicializando_mouse:
+
+	mov ax, 01h
+	int 33h
+		
+;DESENHAR A INTERFACE
 ;desenhar retas
 
-		mov		byte[cor],branco_intenso	;linha do meio
-		mov		ax, 250
-		push		ax
-		mov		ax,0
-		push		ax
-		mov		ax, 250
-		push		ax
-		mov		ax,480
-		push		ax
-		call		line
-		
-		mov		byte[cor],branco_intenso	;linha entre histogramas
-		mov		ax, 250
-		push		ax
-		mov		ax,250
-		push		ax
-		mov		ax, 640
-		push		ax
-		mov		ax,250
-		push		ax
-		call		line
-		
-		mov		byte[cor],branco_intenso	;linha baixa
-		mov		ax, 0
-		push		ax
-		mov		ax,115
-		push		ax
-		mov		ax, 250
-		push		ax
-		mov		ax,115
-		push		ax
-		call		line
-		
-		mov		byte[cor],branco_intenso	;linha alta
-		mov		ax, 0
-		push		ax
-		mov		ax,365
-		push		ax
-		mov		ax, 250
-		push		ax
-		mov		ax,365
-		push		ax
-		call		line
-		
-		mov		byte[cor],branco_intenso	;1 linha menu
-		mov		ax, 70
-		push		ax
-		mov		ax, 480
-		push		ax
-		mov		ax, 70
-		push		ax
-		mov		ax, 365
-		push		ax
-		call		line
-		
-		mov		byte[cor],branco_intenso	;2 linha menu
-		mov		ax, 130
-		push		ax
-		mov		ax, 480
-		push		ax
-		mov		ax, 130
-		push		ax
-		mov		ax, 365
-		push		ax
-		call		line
-		
-		mov		byte[cor],branco_intenso	;3 linha menu
-		mov		ax, 190
-		push		ax
-		mov		ax, 480
-		push		ax
-		mov		ax, 190
-		push		ax
-		mov		ax, 365
-		push		ax
-		call		line
-		
+	mov		byte[cor],branco_intenso	;linha do meio
+	mov		ax, 250
+	push		ax
+	mov		ax,0
+	push		ax
+	mov		ax, 250
+	push		ax
+	mov		ax,480
+	push		ax
+	call		line
+	
+	mov		byte[cor],branco_intenso	;linha entre histogramas
+	mov		ax, 250
+	push		ax
+	mov		ax,250
+	push		ax
+	mov		ax, 640
+	push		ax
+	mov		ax,250
+	push		ax
+	call		line
+	
+	mov		byte[cor],branco_intenso	;linha baixa
+	mov		ax, 0
+	push		ax
+	mov		ax,115
+	push		ax
+	mov		ax, 250
+	push		ax
+	mov		ax,115
+	push		ax
+	call		line
+	
+	mov		byte[cor],branco_intenso	;linha alta
+	mov		ax, 0
+	push		ax
+	mov		ax,365
+	push		ax
+	mov		ax, 250
+	push		ax
+	mov		ax,365
+	push		ax
+	call		line
+	
+	mov		byte[cor],branco_intenso	;1 linha menu
+	mov		ax, 70
+	push		ax
+	mov		ax, 480
+	push		ax
+	mov		ax, 70
+	push		ax
+	mov		ax, 365
+	push		ax
+	call		line
+	
+	mov		byte[cor],branco_intenso	;2 linha menu
+	mov		ax, 130
+	push		ax
+	mov		ax, 480
+	push		ax
+	mov		ax, 130
+	push		ax
+	mov		ax, 365
+	push		ax
+	call		line
+	
+	mov		byte[cor],branco_intenso	;3 linha menu
+	mov		ax, 190
+	push		ax
+	mov		ax, 480
+	push		ax
+	mov		ax, 190
+	push		ax
+	mov		ax, 365
+	push		ax
+	call		line
+	
 ;escrever nome
 
-    	mov     	cx,14			;n?mero de caracteres
-    	mov     	bx,0
-    	mov     	dh,25			;linha 0-29
-    	mov     	dl,3			;coluna 0-79
-		mov		byte[cor],azul
+	mov     	cx,14			;numero de caracteres
+	mov     	bx,0
+	mov     	dh,25			;linha 0-29
+	mov     	dl,3			;coluna 0-79
+	mov		byte[cor],azul
+	
 l4:
-		call	cursor
-    	mov     al,[bx+nome]
-		call	caracter
-    	inc     bx			;proximo caracter
-		inc		dl			;avanca a coluna
-		;inc		byte [cor]		;mudar a cor para a seguinte
-    	loop    l4
-		
+	call	cursor
+	mov     al,[bx+nome]
+	call	caracter
+	inc     bx			;proximo caracter
+	inc		dl			;avanca a coluna
+	;inc		byte [cor]		;mudar a cor para a seguinte
+	loop    l4
+	
 ;escreve curso
 
-		mov     	cx,24			;n?mero de caracteres
-    	mov     	bx,0
-    	mov     	dh,26			;linha 0-29
-    	mov     	dl,3			;coluna 0-79
-		mov		byte[cor],azul
+	mov     	cx,24			;n?mero de caracteres
+	mov     	bx,0
+	mov     	dh,26			;linha 0-29
+	mov     	dl,3			;coluna 0-79
+	mov		byte[cor],azul
+	
 l5:
-		call	cursor
-    	mov     al,[bx+curso]
-		call	caracter
-    	inc     bx			;proximo caracter
-		inc		dl			;avanca a coluna
-		;inc		byte [cor]		;mudar a cor para a seguinte
-    	loop    l5
-		
+	call	cursor
+	mov     al,[bx+curso]
+	call	caracter
+	inc     bx			;proximo caracter
+	inc		dl			;avanca a coluna
+	;inc		byte [cor]		;mudar a cor para a seguinte
+	loop    l5
+	
 ;escreve o periodo
 
-		mov     	cx,9			;n?mero de caracteres
-    	mov     	bx,0
-    	mov     	dh,27			;linha 0-29
-    	mov     	dl,3			;coluna 0-79
-		mov		byte[cor],azul
+	mov     	cx,9			;n?mero de caracteres
+	mov     	bx,0
+	mov     	dh,27			;linha 0-29
+	mov     	dl,3			;coluna 0-79
+	mov		byte[cor],azul
+	
 l6:
-		call	cursor
-    	mov     al,[bx+periodo]
-		call	caracter
-    	inc     bx			;proximo caracter
-		inc		dl			;avanca a coluna
-		;inc		byte [cor]		;mudar a cor para a seguinte
-    	loop    l6
-		
-;escreve abrir
+	call	cursor
+	mov     al,[bx+periodo]
+	call	caracter
+	inc     bx			;proximo caracter
+	inc		dl			;avanca a coluna
+	;inc		byte [cor]		;mudar a cor para a seguinte
+	loop    l6
+	
+call l_menu ; escreve menu
 
-		mov     	cx,5			;n?mero de caracteres
-    	mov     	bx,0
-    	mov     	dh,3			;linha 0-29
-    	mov     	dl,2			;coluna 0-79
-		mov		byte[cor],branco_intenso
-l7:
-		call	cursor
-    	mov     al,[bx+abrir]
-		call	caracter
-    	inc     bx			;proximo caracter
-		inc		dl			;avanca a coluna
-		;inc		byte [cor]		;mudar a cor para a seguinte
-    	loop    l7		
+	
+l_mouse:
 
-;escreve sair
+	mov ax, 5h
+	mov bx, 0
+	int 33h
+	
+	cmp bx, 1
+	jl	l_mouse
+	
+	mov	ax,480
+	sub ax, dx
+	
+	cmp ax, 365 ;não está em uma area clicavel
+	jl l_mouse
+	
+	mov	ax,cx
 
-		mov     	cx,4			;n?mero de caracteres
-    	mov     	bx,0
-    	mov     	dh,3			;linha 0-29
-    	mov     	dl,10			;coluna 0-79
-		mov		byte[cor],branco_intenso
-l8:
-		call	cursor
-    	mov     al,[bx+sair]
-		call	caracter
-    	inc     bx			;proximo caracter
-		inc		dl			;avanca a coluna
-		;inc		byte [cor]		;mudar a cor para a seguinte
-    	loop    l8	
+l_abrir:
+	cmp ax, 70
+	jg l_fechar
+	
+	call l_menu
+	call abrir_amarelo
+	
+	jmp verifica_arquivo
 
-;escreve hist
+l_fechar:		
+	cmp ax, 130
+	jg l_hist
+	
+	call l_menu
+	call sair_amarelo
+	
+	jmp exit
 
-		mov     	cx,4			;n?mero de caracteres
-    	mov     	bx,0
-    	mov     	dh,3			;linha 0-29
-    	mov     	dl,18			;coluna 0-79
-		mov		byte[cor],branco_intenso
-l9:
-		call	cursor
-    	mov     al,[bx+hist]
-		call	caracter
-    	inc     bx			;proximo caracter
-		inc		dl			;avanca a coluna
-		;inc		byte [cor]		;mudar a cor para a seguinte
-    	loop    l9	
-		
-;escreve histeq
+l_hist:	
+	cmp ax, 200
+	jg l_histeq
+	
+	cmp word[handle],0
+	je l_mouse
+	
+	call l_menu
+	call hist_amarelo
+	jmp l_setup_max
+	
+l_histeq:
+	cmp ax, 250
+	jg l_mouse
+	
+	cmp word[handle],0
+	je l_mouse
+	
+	call l_menu
+	call histeq_amarelo
+	
+	jmp f_densidade_acumulada
+	
+jmp l_mouse
+	
+	
+verifica_arquivo:
+	
+	cmp word[handle],0
+	je abrir_arquivo ;não abriu ainda
 
-		mov     	cx,6			;n?mero de caracteres
-    	mov     	bx,0
-    	mov     	dh,3			;linha 0-29
-    	mov     	dl,25			;coluna 0-79
-		mov		byte[cor],branco_intenso
-l10:
-		call	cursor
-    	mov     al,[bx+histeq]
-		call	caracter
-    	inc     bx			;proximo caracter
-		inc		dl			;avanca a coluna
-		;inc		byte [cor]		;mudar a cor para a seguinte
-    	loop    l10
+fechar_arquivo:
+	
+	;fechar o arquivo
+	mov bx, handle
+	mov ah, 3Eh
+	int 21h		
+	
+abrir_arquivo:
 
-
-		mov dx, filename ; coloca o endereço do nome do arquivo em dx
-		mov al, 2 ; modo leitura e escrita
-		mov ah, 3Dh ;abre arquivo
-		int 21h
-		
-		mov [handle], ax
-		
-		xor si, si
-		
+	mov dx, filename ; coloca o endereço do nome do arquivo em dx
+	mov al, 2 ; modo leitura e escrita
+	mov ah, 3Dh ;abre arquivo
+	int 21h
+	
+	mov [handle], ax
+	
+	mov word[i],0
+	mov word[j], 365
+	
+	xor si, si
+	
 zerar_histograma:
-		
-		cmp si, 512
-		je le_um_numero
-		
-		mov word[histograma+si], 0
-		
-		inc si
-		inc si
-		
-		jmp zerar_histograma
 	
-		
+	cmp si, 512
+	je le_um_numero
+	
+	mov word[histograma+si], 0
+	
+	inc si
+	inc si
+	
+	jmp zerar_histograma
+
 le_um_numero:
-		mov byte[sum], 0
-		
-le: ;le um byte	
+
+	mov byte[sum], 0
 	
-		mov ah, 3Fh 
-		mov bx, [handle] ;manipulador
-		mov cx, 1 ;quantidade de bytes a serem lidos
-		mov dx, buffer ;segment offset de um buffer
-		int 21h
+le_byte: ;le um byte	
+
+	mov ah, 3Fh 
+	mov bx, [handle] ;manipulador
+	mov cx, 1 ;quantidade de bytes a serem lidos
+	mov dx, buffer ;segment offset de um buffer
+	int 21h
+	
+	mov dl, byte[buffer]
+	cmp dl, ' '
+	je printar_ponto
+	
+	sub dl, 30h
+	
+	mov al, 10 ;
+	mov bl, byte[sum]
+	mul bl
+	
+	mov byte[sum], al
 		
-		mov dl, byte[buffer]
-		cmp dl, ' '
-		je printar_ponto
-		
-		sub dl, 30h
-		
-		mov al, 10 ;
-		mov bl, byte[sum]
-		mul bl
-		
-		mov byte[sum], al
-			
-		add byte[sum], dl
-		
-		jmp le
-		
-		
-		
+	add byte[sum], dl
+	
+	jmp le_byte
+	
 printar_ponto:		
 
-		;add byte[sum], 10h ;em binario - 10h é pq o espaco é 20h
-		xor ax, ax
-		mov al, byte[sum]
-		
-		;mov si, ax
-		mov bl, 2
-		mul bl
-		mov si, ax
-		
-		inc word[histograma+si]
-		
-		mov al, byte[sum]
-		mov dl, 16
-		div dl
-		mov byte[cor], al
-		
-		mov dx, word[i]
-		push dx
-		
-		mov dx, word[j]
-		push dx
-		
-		call plot_xy
-		
-		cmp word[i], 249
-		je nova_linha
-		inc word[i]
-		jmp le_um_numero
-		
+	;add byte[sum], 10h ;em binario - 10h é pq o espaco é 20h
+	xor ax, ax
+	mov al, byte[sum]
+	
+	;mov si, ax
+	mov bl, 2
+	mul bl
+	mov si, ax
+	
+	inc word[histograma+si]
+	
+	mov al, byte[sum]
+	mov dl, 16
+	div dl
+	mov byte[cor], al
+	
+	mov dx, word[i]
+	push dx
+	
+	mov dx, word[j]
+	push dx
+	
+	call plot_xy
+	
+	cmp word[i], 249
+	je nova_linha
+	inc word[i]
+	jmp le_um_numero
+	
 nova_linha:
-		cmp word[j], 116
-		je l_setup_max
-		mov word[i], 0
-		dec word[j]
-		jmp le_um_numero
-		
+	cmp word[j], 116
+	jne continua ; acabou de ler o arquivo e printar na tela
+	jmp l_mouse
+	
+continua:
+	mov word[i], 0
+	dec word[j]
+	jmp le_um_numero
+	
 
 l_setup_max:
-		xor si, si
-		xor ax, ax
-		
+	xor si, si
+	xor ax, ax
+	
 l_histograma:
-		mov ax, word[histograma+si]
-		mov word[max_histograma], ax
-		inc si
-		inc si
-		
+	mov ax, word[histograma+si]
+	mov word[max_histograma], ax
+	inc si
+	inc si
+	
 l_max_histograma:
 
-		cmp si, 512
-		je l_setup_histograma
-		
-		mov ax, word[histograma+si]
-		cmp word[max_histograma], ax
-		jl l_histograma
-		
-		inc si
-		inc si
-		jmp l_max_histograma
-		
+	cmp si, 512
+	je l_setup_histograma
+	
+	mov ax, word[histograma+si]
+	cmp word[max_histograma], ax
+	jl l_histograma
+	
+	inc si
+	inc si
+	jmp l_max_histograma
+	
 
 l_setup_histograma:
-		mov word[i], 0
-		
+	mov word[i], 0
+	
 l_desenhar_histograma:
 
-		mov		byte[cor],branco_intenso	;linha entre histogramas
-		
-		mov		ax, 260 ;x0
-		add		ax, word[i]
-		push		ax
-		
-		mov		ax, 260 ;y0
-		push		ax
-		
-		mov		ax, 260 ;xf
-		add 	ax, word[i]
-		push		ax
-		
-		;mov si,	word[i]
-		mov ax, word[i]
-		mov bx, 2
-		mul bx
-		mov si, ax
-		
-		mov ax, word[histograma+si]   ; AL = 0C8h
-		mov bx, 200
-		mul bx       ; AX = 0320h (800)
-		
-		mov bx, word[max_histograma]
-		div bx
-		
-		add ax, 260
-		push		ax
-		
-		cmp word[i], 256
-		je f_densidade_acumulada
-		
-		call		line
-		
-		inc word[i]
-		;inc word[i]
-		
-		jmp l_desenhar_histograma
-		
-		
+	mov		byte[cor],branco_intenso	;linha entre histogramas
+	
+	mov		ax, 260 ;x0
+	add		ax, word[i]
+	push		ax
+	
+	mov		ax, 260 ;y0
+	push		ax
+	
+	mov		ax, 260 ;xf
+	add 	ax, word[i]
+	push		ax
+	
+	;mov si,	word[i]
+	mov ax, word[i]
+	mov bx, 2
+	mul bx
+	mov si, ax
+	
+	mov ax, word[histograma+si]   ; AL = 0C8h
+	mov bx, 200
+	mul bx       ; AX = 0320h (800)
+	
+	mov bx, word[max_histograma]
+	div bx
+	
+	add ax, 260
+	push		ax
+	
+	cmp word[i], 256
+	jne continua2
+	jmp l_mouse
+
+continua2:
+
+	call line
+	
+	inc word[i]
+	;inc word[i]
+	
+	jmp l_desenhar_histograma
+	
+	
 f_densidade_acumulada:
-		
-		xor si, si
+	
+	xor si, si
 		
 zerar_histo_eq:
 		
-		cmp si, 512
-		je begin_histo_eq
-		
-		mov word[histograma2+si],0
-		mov word[histo_eq+si], 0
-		
-		inc si
-		inc si
-		
-		jmp zerar_histo_eq
+	cmp si, 512
+	je begin_histo_eq
+	
+	mov word[histograma2+si],0
+	mov word[histo_eq+si], 0
+	
+	inc si
+	inc si
+	
+	jmp zerar_histo_eq
 
 begin_histo_eq:
 		
-		mov ax, word[histograma]
-		mov word[histo_eq], ax
-		xor si, si
-		inc si
-		inc si
+	mov ax, word[histograma]
+	mov word[histo_eq], ax
+	xor si, si
+	inc si
+	inc si
 		
 for_histo_eq:
 		
-		cmp si, 512
-		je setup_h
-		
-		mov ax, word[histo_eq+si]
-		add ax, word[histograma+si]
-		add ax, word[histo_eq-2+si]
-		
-		mov word[histo_eq+si], ax
-		
-		inc si
-		inc si
-		jmp for_histo_eq
+	cmp si, 512
+	je setup_h
+	
+	mov ax, word[histo_eq+si]
+	add ax, word[histograma+si]
+	add ax, word[histo_eq-2+si]
+	
+	mov word[histo_eq+si], ax
+	
+	inc si
+	inc si
+	jmp for_histo_eq
 		
 setup_h:
 
-		mov ax, word[histo_eq]
-		mov word[min_histo_eq], ax
-		
-		mov ax, word[histo_eq+510]
-		mov word[max_histo_eq], ax
-		
-		mov ax, word[max_histo_eq]
-		sub ax, word[min_histo_eq]
-		
-		;mov bx, 255
-		;mul bx
-		
-		mov word[den_h], ax
-		
-		xor si, si		
+	mov ax, word[histo_eq]
+	mov word[min_histo_eq], ax
+	
+	mov ax, word[histo_eq+510]
+	mov word[max_histo_eq], ax
+	
+	mov ax, word[max_histo_eq]
+	sub ax, word[min_histo_eq]
+	
+	;mov bx, 255
+	;mul bx
+	
+	mov word[den_h], ax
+	
+	xor si, si		
 		
 begin_h:
 
-		cmp si, 512
-		je	setup_feq
-		
-		mov ax, word[histo_eq + si]
-		sub ax, word[min_histo_eq]
-		
-		mov bx, 255
-		mul bx
-		
-		mov bx, word[den_h]
-		div bx
-		
-		mov word[h+si], ax
-		
-		inc si
-		inc si
-		
-		jmp begin_h
+	cmp si, 512
+	je	setup_feq
+	
+	mov ax, word[histo_eq + si]
+	sub ax, word[min_histo_eq]
+	
+	mov bx, 255
+	mul bx
+	
+	mov bx, word[den_h]
+	div bx
+	
+	mov word[h+si], ax
+	
+	inc si
+	inc si
+	
+	jmp begin_h
 		
 setup_feq:
 
-		mov ah, 0x42
-		mov bx, [handle]
-		mov cx, 0
-		mov dx, 0
-		mov al, 0
-		int 21h
-		
-		xor si, si
-		
-		mov word[i], 0
-		mov word[j], 365
+	mov ah, 0x42
+	mov bx, [handle]
+	mov cx, 0
+	mov dx, 0
+	mov al, 0
+	int 21h
+	
+	xor si, si
+	
+	mov word[i], 0
+	mov word[j], 365
 		
 le_um_numero_feq:
 
-		mov byte[sum], 0
+	mov byte[sum], 0
 		
 le_feq:
 	
-		mov ah, 3Fh 
-		mov bx, [handle]
-		mov cx, 1 ;quantidade de bytes a serem lidos
-		mov dx, buffer ;segment offset de um buffer
-		int 21h
+	mov ah, 3Fh 
+	mov bx, [handle]
+	mov cx, 1 ;quantidade de bytes a serem lidos
+	mov dx, buffer ;segment offset de um buffer
+	int 21h
+	
+	mov dl, byte[buffer]
+	cmp dl, ' '
+	je printar_ponto_feq
+	
+	sub dl, 30h
+	
+	mov al, 10 ;
+	mov bl, byte[sum]
+	mul bl
+	
+	mov byte[sum], al
 		
-		mov dl, byte[buffer]
-		cmp dl, ' '
-		je printar_ponto_feq
-		
-		sub dl, 30h
-		
-		mov al, 10 ;
-		mov bl, byte[sum]
-		mul bl
-		
-		mov byte[sum], al
-			
-		add byte[sum], dl
-		
-		jmp le_feq
+	add byte[sum], dl
+	
+	jmp le_feq
 		
 		
 		
 printar_ponto_feq:
 
-		xor ax, ax
-		mov al, byte[sum]
-		mov bx, 2
-		mul bx
-		mov si, ax ;posicao
-		mov ax, word[h+si]
-		
-		mov bx, 2
-		mul bx
-		
-		mov si, ax
-		
-		inc word[histograma2+si]
-		
-		
-		xor ax, ax
-		mov al, byte[sum]
-		mov bx, 2
-		mul bx
-		mov si, ax ;posicao
-		mov ax, word[h+si]
-		
-		mov bx, 16
-		div bx
-		
-		mov byte[cor], al
-		
-		mov dx, word[i]
-		push dx
-		
-		mov dx, word[j]
-		push dx
-		
-		call plot_xy
-		
-		cmp word[i], 249
-		je nova_linha_feq
-		inc word[i]
-		jmp le_um_numero_feq
+	xor ax, ax
+	mov al, byte[sum]
+	mov bx, 2
+	mul bx
+	mov si, ax ;posicao
+	mov ax, word[h+si]
+	
+	mov bx, 2
+	mul bx
+	
+	mov si, ax
+	
+	inc word[histograma2+si]
+	
+	
+	xor ax, ax
+	mov al, byte[sum]
+	mov bx, 2
+	mul bx
+	mov si, ax ;posicao
+	mov ax, word[h+si]
+	
+	mov bx, 16
+	div bx
+	
+	mov byte[cor], al
+	
+	mov dx, word[i]
+	push dx
+	
+	mov dx, word[j]
+	push dx
+	
+	call plot_xy
+	
+	cmp word[i], 249
+	je nova_linha_feq
+	inc word[i]
+	jmp le_um_numero_feq
 		
 nova_linha_feq:
 
-		cmp word[j], 116
-		je l_setup_max_2
-		mov word[i], 0
-		dec word[j]
-		jmp le_um_numero_feq
+	cmp word[j], 116
+	je l_setup_max_2
+	mov word[i], 0
+	dec word[j]
+	jmp le_um_numero_feq
 
 		
 l_setup_max_2:
-		xor si, si
-		xor ax, ax
+
+	xor si, si
+	xor ax, ax
 		
 l_histograma2
-		mov ax, word[histograma2+si]
-		mov word[max_histograma2], ax
-		inc si
-		inc si
+
+	mov ax, word[histograma2+si]
+	mov word[max_histograma2], ax
+	inc si
+	inc si
 		
 l_max_histograma2:
 
-		cmp si, 512
-		je histograma_eq
-		
-		mov ax, word[histograma2+si]
-		cmp word[max_histograma2], ax
-		jl l_histograma2
-		
-		inc si
-		inc si
-		jmp l_max_histograma2		
+	cmp si, 512
+	je histograma_eq
+	
+	mov ax, word[histograma2+si]
+	cmp word[max_histograma2], ax
+	jl l_histograma2
+	
+	inc si
+	inc si
+	jmp l_max_histograma2		
 		
 histograma_eq:
 
@@ -576,95 +606,52 @@ histograma_eq:
 		
 	printa_histo_eq:
 
-		mov		byte[cor], branco_intenso	;linha entre histogramas
+	mov		byte[cor], branco_intenso	;linha entre histogramas
+	
+	mov		ax, 260 ;x0
+	add		ax, word[i]
+	push	ax
+	
+	mov		ax, 10 ;y0
+	push	ax
+	
+	mov		ax, 260 ;xf
+	add 	ax, word[i]
+	push	ax
+	
+	mov ax, word[i]
+	mov bx, 2
+	mul bx
+	mov si, ax
+	
+	mov ax, word[histograma2+si]
+	
+	mov bx, 200
+	mul bx
+	
+	mov bx, word[max_histograma2]
+	div bx
+	
+	add ax, 10
+	;mov ax, 30
+	push	ax
+	
+	cmp word[i], 256
+	jne continua3
+	jmp l_mouse
 		
-		mov		ax, 260 ;x0
-		add		ax, word[i]
-		push	ax
+	continua3:
+	
+	call	line
+	
+	inc word[i]
+	
+	jmp printa_histo_eq	
 		
-		mov		ax, 10 ;y0
-		push	ax
-		
-		mov		ax, 260 ;xf
-		add 	ax, word[i]
-		push	ax
-		
-		mov ax, word[i]
-		mov bx, 2
-		mul bx
-		mov si, ax
-		
-		mov ax, word[histograma2+si]
-		
-		mov bx, 200
-		mul bx
-		
-		mov bx, word[max_histograma2]
-		div bx
-		
-		add ax, 10
-		;mov ax, 30
-		push	ax
-		
-		cmp word[i], 256
-		je exit
-		
-		call		line
-		
-		inc word[i]
-		
-		jmp printa_histo_eq	
-		
-		
-		
-		
-
-; printa_histo_eq:
-
-		; mov		byte[cor], branco_intenso	;linha entre histogramas
-		
-		; mov		ax, 260 ;x0
-		; add		ax, word[i]
-		; push	ax
-		
-		; mov		ax, 10 ;y0
-		; push	ax
-		
-		; mov		ax, 260 ;xf
-		; add 	ax, word[i]
-		; push	ax
-		
-		; mov ax, word[i]
-		; mov bx, 2
-		; mul bx
-		; mov si, ax
-		
-		; mov ax, word[histo_eq+si]   
-		; mov bx, 200
-		; mul bx      
-		
-		; mov bx, word[max_histo_eq]
-		; div bx
-		
-		; add ax, 10
-		; push	ax
-		
-		; cmp word[i], 256
-		; je exit
-		
-		; call		line
-		
-		; inc word[i]
-		; ;inc word[i]
-		
-		; jmp printa_histo_eq
-		
-				
-
 exit:		
 
-		mov    	ah,08h
-		int     21h
+		;mov    ah,08h
+		;int     21h
 	    mov  	ah,0   			; set video mode
 	    mov  	al,[modo_anterior]   	; modo anterior
 	    int  	10h
@@ -760,278 +747,7 @@ plot_xy:
 		popf
 		pop		bp
 		ret		4
-;_____________________________________________________________________________
-;    fun??o circle
-;	 push xc; push yc; push r; call circle;  (xc+r<639,yc+r<479)e(xc-r>0,yc-r>0)
-; cor definida na variavel cor
-circle:
-	push 	bp
-	mov	 	bp,sp
-	pushf                        ;coloca os flags na pilha
-	push 	ax
-	push 	bx
-	push	cx
-	push	dx
-	push	si
-	push	di
-	
-	mov		ax,[bp+8]    ; resgata xc
-	mov		bx,[bp+6]    ; resgata yc
-	mov		cx,[bp+4]    ; resgata r
-	
-	mov 	dx,bx	
-	add		dx,cx       ;ponto extremo superior
-	push    ax			
-	push	dx
-	call plot_xy
-	
-	mov		dx,bx
-	sub		dx,cx       ;ponto extremo inferior
-	push    ax			
-	push	dx
-	call plot_xy
-	
-	mov 	dx,ax	
-	add		dx,cx       ;ponto extremo direita
-	push    dx			
-	push	bx
-	call plot_xy
-	
-	mov		dx,ax
-	sub		dx,cx       ;ponto extremo esquerda
-	push    dx			
-	push	bx
-	call plot_xy
 		
-	mov		di,cx
-	sub		di,1	 ;di=r-1
-	mov		dx,0  	;dx ser? a vari?vel x. cx ? a variavel y
-	
-;aqui em cima a l?gica foi invertida, 1-r => r-1
-;e as compara??es passaram a ser jl => jg, assim garante 
-;valores positivos para d
-
-stay:				;loop
-	mov		si,di
-	cmp		si,0
-	jg		inf       ;caso d for menor que 0, seleciona pixel superior (n?o  salta)
-	mov		si,dx		;o jl ? importante porque trata-se de conta com sinal
-	sal		si,1		;multiplica por doi (shift arithmetic left)
-	add		si,3
-	add		di,si     ;nesse ponto d=d+2*dx+3
-	inc		dx		;incrementa dx
-	jmp		plotar
-inf:	
-	mov		si,dx
-	sub		si,cx  		;faz x - y (dx-cx), e salva em di 
-	sal		si,1
-	add		si,5
-	add		di,si		;nesse ponto d=d+2*(dx-cx)+5
-	inc		dx		;incrementa x (dx)
-	dec		cx		;decrementa y (cx)
-	
-plotar:	
-	mov		si,dx
-	add		si,ax
-	push    si			;coloca a abcisa x+xc na pilha
-	mov		si,cx
-	add		si,bx
-	push    si			;coloca a ordenada y+yc na pilha
-	call plot_xy		;toma conta do segundo octante
-	mov		si,ax
-	add		si,dx
-	push    si			;coloca a abcisa xc+x na pilha
-	mov		si,bx
-	sub		si,cx
-	push    si			;coloca a ordenada yc-y na pilha
-	call plot_xy		;toma conta do s?timo octante
-	mov		si,ax
-	add		si,cx
-	push    si			;coloca a abcisa xc+y na pilha
-	mov		si,bx
-	add		si,dx
-	push    si			;coloca a ordenada yc+x na pilha
-	call plot_xy		;toma conta do segundo octante
-	mov		si,ax
-	add		si,cx
-	push    si			;coloca a abcisa xc+y na pilha
-	mov		si,bx
-	sub		si,dx
-	push    si			;coloca a ordenada yc-x na pilha
-	call plot_xy		;toma conta do oitavo octante
-	mov		si,ax
-	sub		si,dx
-	push    si			;coloca a abcisa xc-x na pilha
-	mov		si,bx
-	add		si,cx
-	push    si			;coloca a ordenada yc+y na pilha
-	call plot_xy		;toma conta do terceiro octante
-	mov		si,ax
-	sub		si,dx
-	push    si			;coloca a abcisa xc-x na pilha
-	mov		si,bx
-	sub		si,cx
-	push    si			;coloca a ordenada yc-y na pilha
-	call plot_xy		;toma conta do sexto octante
-	mov		si,ax
-	sub		si,cx
-	push    si			;coloca a abcisa xc-y na pilha
-	mov		si,bx
-	sub		si,dx
-	push    si			;coloca a ordenada yc-x na pilha
-	call plot_xy		;toma conta do quinto octante
-	mov		si,ax
-	sub		si,cx
-	push    si			;coloca a abcisa xc-y na pilha
-	mov		si,bx
-	add		si,dx
-	push    si			;coloca a ordenada yc-x na pilha
-	call plot_xy		;toma conta do quarto octante
-	
-	cmp		cx,dx
-	jb		fim_circle  ;se cx (y) est? abaixo de dx (x), termina     
-	jmp		stay		;se cx (y) est? acima de dx (x), continua no loop
-	
-	
-fim_circle:
-	pop		di
-	pop		si
-	pop		dx
-	pop		cx
-	pop		bx
-	pop		ax
-	popf
-	pop		bp
-	ret		6
-;-----------------------------------------------------------------------------
-;    fun??o full_circle
-;	 push xc; push yc; push r; call full_circle;  (xc+r<639,yc+r<479)e(xc-r>0,yc-r>0)
-; cor definida na variavel cor					  
-full_circle:
-	push 	bp
-	mov	 	bp,sp
-	pushf                        ;coloca os flags na pilha
-	push 	ax
-	push 	bx
-	push	cx
-	push	dx
-	push	si
-	push	di
-
-	mov		ax,[bp+8]    ; resgata xc
-	mov		bx,[bp+6]    ; resgata yc
-	mov		cx,[bp+4]    ; resgata r
-	
-	mov		si,bx
-	sub		si,cx
-	push    ax			;coloca xc na pilha			
-	push	si			;coloca yc-r na pilha
-	mov		si,bx
-	add		si,cx
-	push	ax		;coloca xc na pilha
-	push	si		;coloca yc+r na pilha
-	call line
-	
-		
-	mov		di,cx
-	sub		di,1	 ;di=r-1
-	mov		dx,0  	;dx ser? a vari?vel x. cx ? a variavel y
-	
-;aqui em cima a l?gica foi invertida, 1-r => r-1
-;e as compara??es passaram a ser jl => jg, assim garante 
-;valores positivos para d
-
-stay_full:				;loop
-	mov		si,di
-	cmp		si,0
-	jg		inf_full       ;caso d for menor que 0, seleciona pixel superior (n?o  salta)
-	mov		si,dx		;o jl ? importante porque trata-se de conta com sinal
-	sal		si,1		;multiplica por doi (shift arithmetic left)
-	add		si,3
-	add		di,si     ;nesse ponto d=d+2*dx+3
-	inc		dx		;incrementa dx
-	jmp		plotar_full
-inf_full:	
-	mov		si,dx
-	sub		si,cx  		;faz x - y (dx-cx), e salva em di 
-	sal		si,1
-	add		si,5
-	add		di,si		;nesse ponto d=d+2*(dx-cx)+5
-	inc		dx		;incrementa x (dx)
-	dec		cx		;decrementa y (cx)
-	
-plotar_full:	
-	mov		si,ax
-	add		si,cx
-	push	si		;coloca a abcisa y+xc na pilha			
-	mov		si,bx
-	sub		si,dx
-	push    si		;coloca a ordenada yc-x na pilha
-	mov		si,ax
-	add		si,cx
-	push	si		;coloca a abcisa y+xc na pilha	
-	mov		si,bx
-	add		si,dx
-	push    si		;coloca a ordenada yc+x na pilha	
-	call 	line
-	
-	mov		si,ax
-	add		si,dx
-	push	si		;coloca a abcisa xc+x na pilha			
-	mov		si,bx
-	sub		si,cx
-	push    si		;coloca a ordenada yc-y na pilha
-	mov		si,ax
-	add		si,dx
-	push	si		;coloca a abcisa xc+x na pilha	
-	mov		si,bx
-	add		si,cx
-	push    si		;coloca a ordenada yc+y na pilha	
-	call	line
-	
-	mov		si,ax
-	sub		si,dx
-	push	si		;coloca a abcisa xc-x na pilha			
-	mov		si,bx
-	sub		si,cx
-	push    si		;coloca a ordenada yc-y na pilha
-	mov		si,ax
-	sub		si,dx
-	push	si		;coloca a abcisa xc-x na pilha	
-	mov		si,bx
-	add		si,cx
-	push    si		;coloca a ordenada yc+y na pilha	
-	call	line
-	
-	mov		si,ax
-	sub		si,cx
-	push	si		;coloca a abcisa xc-y na pilha			
-	mov		si,bx
-	sub		si,dx
-	push    si		;coloca a ordenada yc-x na pilha
-	mov		si,ax
-	sub		si,cx
-	push	si		;coloca a abcisa xc-y na pilha	
-	mov		si,bx
-	add		si,dx
-	push    si		;coloca a ordenada yc+x na pilha	
-	call	line
-	
-	cmp		cx,dx
-	jb		fim_full_circle  ;se cx (y) est? abaixo de dx (x), termina     
-	jmp		stay_full		;se cx (y) est? acima de dx (x), continua no loop
-	
-	
-fim_full_circle:
-	pop		di
-	pop		si
-	pop		dx
-	pop		cx
-	pop		bx
-	pop		ax
-	popf
-	pop		bp
-	ret		6
 ;-----------------------------------------------------------------------------
 ;
 ;   fun??o line
@@ -1193,6 +909,161 @@ fim_line:
 		popf
 		pop		bp
 		ret		8
+		
+
+;ESCREVER MENU	
+;escreve abrir
+l_menu:
+
+	mov     	cx,5			;n?mero de caracteres
+	mov     	bx,0
+	mov     	dh,3			;linha 0-29
+	mov     	dl,2			;coluna 0-79
+	mov		byte[cor],branco_intenso
+	
+	l7:
+		call	cursor
+		mov     al,[bx+abrir]
+		call	caracter
+		inc     bx			;proximo caracter
+		inc		dl			;avanca a coluna
+		;inc		byte [cor]		;mudar a cor para a seguinte
+		loop    l7		
+
+;escreve sair
+
+	mov     	cx,4			;n?mero de caracteres
+	mov     	bx,0
+	mov     	dh,3			;linha 0-29
+	mov     	dl,10			;coluna 0-79
+	mov		byte[cor],branco_intenso
+	
+	l8:
+		call	cursor
+		mov     al,[bx+sair]
+		call	caracter
+		inc     bx			;proximo caracter
+		inc		dl			;avanca a coluna
+		;inc		byte [cor]		;mudar a cor para a seguinte
+		loop    l8	
+
+;escreve hist
+
+	mov     	cx,4			;n?mero de caracteres
+	mov     	bx,0
+	mov     	dh,3			;linha 0-29
+	mov     	dl,18			;coluna 0-79
+	mov		byte[cor],branco_intenso
+	
+	l9:
+		call	cursor
+		mov     al,[bx+hist]
+		call	caracter
+		inc     bx			;proximo caracter
+		inc		dl			;avanca a coluna
+		;inc		byte [cor]		;mudar a cor para a seguinte
+		loop    l9	
+	
+;escreve histeq
+
+	mov     	cx,6			;n?mero de caracteres
+	mov     	bx,0
+	mov     	dh,3			;linha 0-29
+	mov     	dl,25			;coluna 0-79
+	mov		byte[cor],branco_intenso
+	
+	l10:
+		call	cursor
+		mov     al,[bx+histeq]
+		call	caracter
+		inc     bx			;proximo caracter
+		inc		dl			;avanca a coluna
+		;inc		byte [cor]		;mudar a cor para a seguinte
+		loop    l10
+	
+	ret
+
+;ESCREVER MENU EM AMARELO	
+;escreve abrir
+abrir_amarelo:
+
+	mov     	cx,5			;n?mero de caracteres
+	mov     	bx,0
+	mov     	dh,3			;linha 0-29
+	mov     	dl,2			;coluna 0-79
+	mov		byte[cor],amarelo
+	
+	l7_:
+		call	cursor
+		mov     al,[bx+abrir]
+		call	caracter
+		inc     bx			;proximo caracter
+		inc		dl			;avanca a coluna
+		;inc		byte [cor]		;mudar a cor para a seguinte
+		loop    l7_		
+
+	ret
+
+;************************************************
+;escreve sair
+sair_amarelo:
+
+	mov     	cx,4			;n?mero de caracteres
+	mov     	bx,0
+	mov     	dh,3			;linha 0-29
+	mov     	dl,10			;coluna 0-79
+	mov		byte[cor],amarelo
+	
+	l8_:
+		call	cursor
+		mov     al,[bx+sair]
+		call	caracter
+		inc     bx			;proximo caracter
+		inc		dl			;avanca a coluna
+		;inc		byte [cor]		;mudar a cor para a seguinte
+		loop    l8_
+
+	ret
+
+;escreve hist
+hist_amarelo:
+
+	mov     	cx,4			;n?mero de caracteres
+	mov     	bx,0
+	mov     	dh,3			;linha 0-29
+	mov     	dl,18			;coluna 0-79
+	mov		byte[cor],amarelo
+	
+	l9_:
+		call	cursor
+		mov     al,[bx+hist]
+		call	caracter
+		inc     bx			;proximo caracter
+		inc		dl			;avanca a coluna
+		;inc		byte [cor]		;mudar a cor para a seguinte
+		loop    l9_	
+	
+	ret
+		
+;escreve histeq
+histeq_amarelo:
+
+	mov     	cx,6			;n?mero de caracteres
+	mov     	bx,0
+	mov     	dh,3			;linha 0-29
+	mov     	dl,25			;coluna 0-79
+	mov		byte[cor],amarelo
+	
+	l10_:
+		call	cursor
+		mov     al,[bx+histeq]
+		call	caracter
+		inc     bx			;proximo caracter
+		inc		dl			;avanca a coluna
+		;inc		byte [cor]		;mudar a cor para a seguinte
+		loop    l10_
+		
+	ret
 ;*******************************************************************
 segment data
 
@@ -1245,9 +1116,9 @@ abrir		db 		'Abrir'
 sair		db		'Sair'
 hist		db		'Hist'
 histeq		db		'Histeq'
-filename 	db		'imagem.txt'
+filename 	db		'imagem.txt',0
 buffer		db		'R', '$'
-handle		dw		'0'
+handle		dw		0
 input		db		'R'
 sum			db		'0', '$'
 i			dw		0
