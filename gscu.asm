@@ -1,4 +1,7 @@
-;Gabriel Ucelli
+;Nome: Gabriel Santa Clara Ucelli
+;Materia: Sistemas Embarcados 1
+;Curso: Engenharia de Computação
+;Matricula: 2013101033
 
 segment code
 ..start:
@@ -104,6 +107,41 @@ segment code
 	mov		ax, 365
 	push		ax
 	call		line
+
+;escrever title histograma
+
+	mov     	cx,10			;numero de caracteres
+	mov     	bx,0
+	mov     	dh,1			;linha 0-29
+	mov     	dl,35			;coluna 0-79
+	mov		byte[cor],branco
+	
+l4__:
+	call	cursor
+	mov     al,[bx+title_histograma]
+	call	caracter
+	inc     bx			;proximo caracter
+	inc		dl			;avanca a coluna
+	;inc		byte [cor]		;mudar a cor para a seguinte
+	loop    l4__
+	
+;escrever title histograma equalizado
+
+	mov     	cx,21			;numero de caracteres
+	mov     	bx,0
+	mov     	dh,15			;linha 0-29
+	mov     	dl,35			;coluna 0-79
+	mov		byte[cor],branco
+	
+l3__:
+	call	cursor
+	mov     al,[bx+title_histograma_eq]
+	call	caracter
+	inc     bx			;proximo caracter
+	inc		dl			;avanca a coluna
+	;inc		byte [cor]		;mudar a cor para a seguinte
+	loop    l3__
+	
 	
 ;escrever nome
 
@@ -124,7 +162,7 @@ l4:
 	
 ;escreve curso
 
-	mov     	cx,24			;n?mero de caracteres
+	mov     	cx,21			;n?mero de caracteres
 	mov     	bx,0
 	mov     	dh,26			;linha 0-29
 	mov     	dl,3			;coluna 0-79
@@ -141,7 +179,7 @@ l5:
 	
 ;escreve o periodo
 
-	mov     	cx,9			;n?mero de caracteres
+	mov     	cx,6			;n?mero de caracteres
 	mov     	bx,0
 	mov     	dh,27			;linha 0-29
 	mov     	dl,3			;coluna 0-79
@@ -165,7 +203,7 @@ l_mouse:
 	mov bx, 0
 	int 33h
 	
-	cmp bx, 1
+	cmp bx, 1 ;não clicou
 	jl	l_mouse
 	
 	mov	ax,480
@@ -177,11 +215,15 @@ l_mouse:
 	mov	ax,cx
 
 l_abrir:
+
 	cmp ax, 70
 	jg l_fechar
 	
 	call l_menu
 	call abrir_amarelo
+	
+	call limpar_histograma
+	call limpar_histograma_eq
 	
 	jmp verifica_arquivo
 
@@ -198,22 +240,23 @@ l_hist:
 	cmp ax, 200
 	jg l_histeq
 	
+	call l_menu
+	call hist_amarelo
+	
 	cmp word[handle],0
 	je l_mouse
 	
-	call l_menu
-	call hist_amarelo
 	jmp l_setup_max
 	
 l_histeq:
 	cmp ax, 250
 	jg l_mouse
 	
-	cmp word[handle],0
-	je l_mouse
-	
 	call l_menu
 	call histeq_amarelo
+	
+	cmp word[handle],0
+	je l_mouse
 	
 	jmp f_densidade_acumulada
 	
@@ -377,7 +420,7 @@ l_desenhar_histograma:
 	mov si, ax
 	
 	mov ax, word[histograma+si]   ; AL = 0C8h
-	mov bx, 200
+	mov bx, 170
 	mul bx       ; AX = 0320h (800)
 	
 	mov bx, word[max_histograma]
@@ -626,7 +669,7 @@ histograma_eq:
 	
 	mov ax, word[histograma2+si]
 	
-	mov bx, 200
+	mov bx, 170
 	mul bx
 	
 	mov bx, word[max_histograma2]
@@ -1064,6 +1107,76 @@ histeq_amarelo:
 		loop    l10_
 		
 	ret
+	
+limpar_histograma:
+	
+	mov word[i],255
+	mov word[j],260
+	
+l_limpar:
+
+	mov byte[cor], preto
+	
+	mov dx, word[i]
+	push dx
+	
+	mov dx, word[j]
+	push dx
+	
+	call plot_xy
+	
+	cmp word[i], 630
+	je nova_linha_limpar_histograma
+	
+	inc word[i]
+	jmp l_limpar
+	
+nova_linha_limpar_histograma:
+
+	cmp word[j], 445
+	je acabou_limpar; acabou de ler o arquivo e printar na tela
+	mov word[i], 255
+	inc word[j]
+	jmp l_limpar
+
+acabou_limpar:
+	ret
+	
+
+limpar_histograma_eq:
+	
+	mov word[i],255
+	mov word[j],5
+	
+l_limpar_eq:
+
+	mov byte[cor], preto
+	
+	mov dx, word[i]
+	push dx
+	
+	mov dx, word[j]
+	push dx
+	
+	call plot_xy
+	
+	cmp word[i], 630
+	je nova_linha_limpar_histograma_eq
+	
+	inc word[i]
+	jmp l_limpar_eq
+	
+nova_linha_limpar_histograma_eq:
+
+	cmp word[j], 190
+	je acabou_limpar_eq; acabou de ler o arquivo e printar na tela
+	mov word[i], 255
+	inc word[j]
+	jmp l_limpar_eq
+
+acabou_limpar_eq:
+	ret
+	
 ;*******************************************************************
 segment data
 
@@ -1108,10 +1221,12 @@ modo_anterior	db		0
 linha   	dw  		0
 coluna  	dw  		0
 deltax		dw		0
-deltay		dw		0	
+deltay		dw		0
+title_histograma	db	'Histograma'
+title_histograma_eq	db	'Histograma equalizado'	
 nome    	db  	'Gabriel Ucelli'
-curso		db		'Engenharia de Computacao'
-periodo		db		'7 periodo'
+curso		db		'Sistemas Embarcados I'
+periodo		db		'2016/1'
 abrir		db 		'Abrir'
 sair		db		'Sair'
 hist		db		'Hist'
